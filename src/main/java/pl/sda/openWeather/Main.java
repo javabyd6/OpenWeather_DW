@@ -1,16 +1,29 @@
 package pl.sda.openWeather;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.sda.serivce.WeatherService;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        ObjectMapper mapper = new ObjectMapper ();
 
-        Weather weather = mapper.readValue(new URL ("http://api.apixu.com/v1/current.json?key=1b301cfd93fe4ee0bd9123325191003&q=Bydgoszcz"),Weather.class);
+        String city="empty";
 
-        System.out.println ("W mieście "+weather.getLocation ().getName ()+" obecnie jest temperatura "+weather.getCurrent ().getTemp_c ()+"°C");
+        while(!city.equals ("exit")) {
+            Scanner scanner = new Scanner (System.in);
+            System.out.println ("Podaj nazwe miasta dla którego chcesz wyświetlić informacjie, jeśli chcesz wyjść wpisz \"exit\"");
+            city = scanner.nextLine ();
+            if(!city.equals ("exit")) {
+                readWeather (city);
+            }
+        }
+
+    }
+    public static void readWeather(String city) throws IOException {
+        WeatherService weatherService =new WeatherService ("http://api.apixu.com/v1/current.json","1b301cfd93fe4ee0bd9123325191003");
+        System.out.println (weatherService.getCityWeather (city).getCurrent ().getTemp_c ());
     }
 }
